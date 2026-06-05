@@ -5,6 +5,7 @@
 .about {
   padding: var(--section-padding);
   background: var(--white);
+  overflow-x: hidden;
 }
 
 .about-grid {

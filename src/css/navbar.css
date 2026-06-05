@@ -5,7 +5,7 @@
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1100;
   background: rgba(255, 255, 255, .92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -119,16 +119,18 @@
 
 /* Mobile Nav Overlay */
 .nav-overlay {
-  display: none;
+  visibility: hidden;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, .45);
-  z-index: 1000;
+  z-index: 1050;
   opacity: 0;
-  transition: opacity var(--transition);
+  pointer-events: none;
+  transition: opacity var(--transition), visibility var(--transition);
 }
 
 .nav-overlay.active {
-  display: block;
+  visibility: visible;
   opacity: 1;
+  pointer-events: auto;
 }
