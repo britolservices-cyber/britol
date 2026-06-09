@@ -9,7 +9,16 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-app.post('/api/send-booking', async (req, res) => {
+app.post('/api/send-booking', (req, res) => {
+  handleBooking(req, res).catch(err => {
+    console.error('Unhandled route error:', err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Server error. Please try again later.' });
+    }
+  });
+});
+
+async function handleBooking(req, res) {
   const {
     service,
     frequency,
@@ -175,6 +184,10 @@ app.post('/api/send-booking', async (req, res) => {
     console.error('Server error:', err);
     return res.status(500).json({ error: 'Server error. Please try again later.' });
   }
+}
+
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'API endpoint not found.' });
 });
 
 const PORT = process.env.PORT || 3000;

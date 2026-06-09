@@ -162,17 +162,22 @@ function initModal() {
           body: JSON.stringify(payload)
         });
 
-        var result = await response.json();
+        var result = {};
+        try {
+          result = await response.json();
+        } catch (_) {
+          // server returned empty or non-JSON body
+        }
 
         if (!response.ok) {
-          throw new Error(result.error || 'Failed to send booking.');
+          throw new Error(result.error || 'Server error (' + response.status + '). Please try again.');
         }
 
         window.smGoStep(5);
       } catch (err) {
         btn.textContent = '✔ Confirm Booking';
         btn.disabled = false;
-        alert('Sorry, there was a problem sending your booking: ' + err.message + '\nPlease call us on 0405 585 405.');
+        alert('Sorry, there was a problem sending your booking.\nPlease call us on 0405 585 405.');
       }
     };
 
