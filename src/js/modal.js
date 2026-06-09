@@ -133,14 +133,47 @@ function initModal() {
     };
 
     /* ── Submit ── */
-    window.smSubmit = function() {
+    window.smSubmit = async function() {
       var btn = document.getElementById('smSubmitBtn');
       btn.textContent = 'Submitting…';
       btn.disabled = true;
-      /* TODO: wire up to your backend / Firebase / email service here */
-      setTimeout(function() {
+
+      var freq  = document.getElementById('smFreq');
+      var days  = document.getElementById('smDays');
+      var time  = document.getElementById('smTime');
+
+      var payload = {
+        service:   SM_LABELS[smSelected] || smSelected,
+        frequency: freq.options[freq.selectedIndex].text,
+        days:      days.options[days.selectedIndex].text,
+        startDate: document.getElementById('smStartDate').value || 'To be confirmed',
+        time:      time.options[time.selectedIndex].text,
+        name:      document.getElementById('smName').value.trim(),
+        phone:     document.getElementById('smPhone').value.trim(),
+        email:     document.getElementById('smEmail').value.trim(),
+        address:   document.getElementById('smAddress').value.trim(),
+        notes:     document.getElementById('smNotes').value.trim()
+      };
+
+      try {
+        var response = await fetch('/api/send-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        var result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to send booking.');
+        }
+
         window.smGoStep(5);
-      }, 900);
+      } catch (err) {
+        btn.textContent = '✔ Confirm Booking';
+        btn.disabled = false;
+        alert('Sorry, there was a problem sending your booking: ' + err.message + '\nPlease call us on 0405 585 405.');
+      }
     };
 
     /* ── Open / Close modal ── */
