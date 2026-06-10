@@ -156,23 +156,7 @@ function initModal() {
       };
 
       try {
-        var response = await fetch('/api/send-booking', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        var result = {};
-        try {
-          result = await response.json();
-        } catch (_) {
-          // server returned empty or non-JSON body
-        }
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Server error (' + response.status + '). Please try again.');
-        }
-
+        await postToApi('/api/send-booking', payload);
         window.smGoStep(5);
       } catch (err) {
         btn.textContent = '✔ Confirm Booking';
